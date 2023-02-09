@@ -1,254 +1,256 @@
-# Instance Variables Code-Along
+# Instance Methods
 
 ## Learning Goals
 
-- Define instance variables
-- Distinguish instance variables from local variables
-- Describe how instance variables give objects attributes and properties
+- Describe an instance method.
+- Call instance methods on an object.
+- Build instance methods for an object.
 
-## Introduction
+## The Behavior of Objects
 
-When we build objects through our own classes, we know we can add **behavior**
-to the objects through instance methods. But how do we give our objects
-**data**? For example, how would we teach a dog what its name is? Or what breed
-it is? How do we put **data** inside of an instance of an object so that each
-dog can have its own name and own breed? In other words, how do we give objects
-attributes or properties?
+We know that classes act as a factory for our objects, capable of instantiating
+new instances.
+
+```ruby
+class Dog
+end
+
+fido = Dog.new #=> #<Dog:0x007fc52c2cc588>
+```
+
+But what can this instance of a dog stored in the local variable `fido` do? In
+fact, how do we even ask this object to do something?
+
+### Dot Notation
+
+We send objects messages asking them to perform an operation or task through a
+syntax known as "Dot Notation".
+
+```ruby
+class Dog
+end
+
+fido = Dog.new #=> #<Dog:0x007fc52c2cc588>
+
+fido.object_id #=> 70173135795280
+```
+
+In the example above, we send the `fido` instance a **message** `#object_id` by
+separating the receiving object, `fido` and the message, `#object_id` by a dot
+(`.`).
+
+When we send an object a message through dot notation, we are invoking the
+corresponding method on the object. We are calling the `#object_id` method on
+`fido`. (Note: the `#object_id` you get if you test out the above code will be
+different.)
+
+The `#object_id` method simply tells you the object's identifier in your
+computer's memory (the place where all things live in your computer).
+
+> I thought of objects being like biological cells and/or individual computers
+> on a network, only able to communicate with messages. - Alan Kay
+
+In dot notation, we call the object that received the method the **receiver**,
+and we call the method the **message**.
+
+```ruby
+# The receiver is this very string      # reverse is the message
+"Strings are instances and objects too".reverse
+```
+
+**Note:** As in JavaScript, dot notation can be used both to call a method and
+to access an attribute of an object. (We'll talk about object attributes in Ruby
+in the next lesson.) Unlike JavaScript, however, Ruby does not require the `()`
+to be appended to a method's name when you call it. For example, these two lines
+of code are equivalent:
+
+```rb
+fido.object_id
+fido.object_id()
+```
+
+What this means is that the syntax for accessing an attribute and calling a
+method can look the same in Ruby. It is important to keep this in mind as you
+program in Ruby and stay aware of which one you're doing in a particular case.
+
+### Exploring Instance Methods
+
+All objects respond to methods (messages), like `#object_id` in the example
+above. One interesting method that is available on all objects in Ruby is the
+`#methods` method. Calling `#methods` on an object returns an array of all the
+methods (messages) an object responds to. We can invoke this method via
+dot-notation.
+
+One of the great things you can ask every object in Ruby is "What methods do you
+respond to?" To see for yourself, try this out in IRB:
+
+```ruby
+class Dog
+end
+
+fido = Dog.new
+fido.methods
+#=> [:psych_to_yaml, :to_yaml, :to_yaml_properties, :local_methods, :try, :nil?,
+# :===, :=~, :!~, :eql?, :hash, :<=>, :class, :singleton_class, :clone, :dup,
+# :itself, :taint, :tainted?, :untaint, :untrust, :untrusted?, :trust, :freeze,
+# :frozen?, :to_s, :inspect, :methods, :singleton_methods, :protected_methods,
+# :private_methods, :public_methods, :instance_variables,
+# :instance_variable_get, :instance_variable_set, :instance_variable_defined?,
+# :remove_instance_variable, :instance_of?, :kind_of?, :is_a?, :tap, :send,
+# :public_send, :respond_to?, :extend, :display, :method, :public_method,
+# :singleton_method, :define_singleton_method, :object_id, :to_enum, :enum_for,
+# :==, :equal?, :!, :!=, :instance_eval, :instance_exec, :__send__, :__id__]
+```
+
+As you can see, out of the box, our objects can do a lot of things. Where these
+things come from and what they do are not so important right now because all of
+that functionality is very low level and not interesting to our Dogs.
+
+### Building Your Own Instance Methods
+
+If you haven't already, fork and clone this lab to your local environment and
+run `learn test`. Follow along below to get the first few tests for the `Dog`
+class to pass. Once you have those passing, you will complete the remaining
+tasks on your own.
+
+How do we add our own methods to our classes? In our Dog example, can we teach
+our Dog a new trick? Can we teach our Dog to bark for example?
+
+We can. We're used to defining methods already with the `def` keyword. If we
+place this method definition within the body of a class, that method becomes a
+specific behavior of instances of that class, not a generic procedure we can
+just call whenever we want.
+
+We call the methods defined within the object's class **Instance Methods**
+because they are methods that belong to any instance of the class.
+
+Let's create our `Dog` class in `lib/dog.rb`. It's a convention among Rubyists
+to define each class in its own file, using the class name to determine the file
+name.
+
+In the `Dog` class, let's define our `#bark` instance method:
+
+```ruby
+class Dog
+  # Class body
+
+  # Instance Method Definition
+  def bark
+    puts "Woof!"
+  end
+end
+```
+
+With this code in place, if you run the tests you should now be passing the
+first three tests.
+
+Now let's create an instance of `Dog` and verify that our `Dog` object knows how
+to bark:
+
+```ruby
+class Dog
+  def bark
+    puts "Woof!"
+  end
+end
+
+fido = Dog.new
+fido.bark #=> "Woof!"
+```
+
+If you execute this code in the terminal by running `ruby lib/dog.rb`, you
+should see "Woof!" written out.
+
+By defining `#bark` within the `Dog` class, `bark` becomes a method of all
+instances of Dogs. Let's create a second instance of `Dog`, `snoopy`, and verify
+that snoopy also knows how to bark by running `ruby lib/dog.rb` again.
+
+```ruby
+class Dog
+  def bark
+    puts "Woof!"
+  end
+end
+
+fido = Dog.new
+fido.bark #=> "Woof!"
+
+snoopy = Dog.new
+snoopy.bark #=> "Woof!"
+```
+
+Objects can only do what we teach them to do via the code we write and the
+methods we define. For example, currently, Dogs do not know how to sit.
+
+```ruby
+class Dog
+  def bark
+    puts "Woof!"
+  end
+end
+
+fido = Dog.new
+fido.bark #=> "Woof!"
+fido.sit #=> NoMethodError: undefined method `sit' for #<Dog:0x007fa4e9a9e8a0>
+```
+
+In the same manner, instance methods, the methods that belong to particular
+instances of particular classes, cannot be used globally like procedural
+methods. They cannot be called without an instance.
+
+```ruby
+class Dog
+  def bark
+    puts "Woof!"
+  end
+end
+
+fido = Dog.new
+
+# Let's try just calling bark without fido
+bark #=> NameError: undefined local variable or method `bark' for main:Object
+```
 
 ## Instructions
 
-Fork and clone this code-along, then run your tests with `learn test` to get an
-overview of what we are trying to do. Follow along to get the tests to pass.
+Complete the following tasks to get the rests of the tests passing:
 
-## What Is a Local Variable?
+1. Add an instance method `#sit` to your `Dog` class that will puts "The Dog is sitting".
+2. Define a `Person` class in `lib/person.rb`
+3. Add an instance method `#talk` to your Person class that will puts "Hello World!"
+4. Add an instance method `#walk` to your Person class that will puts "The Person is walking".
 
-We've been working with variables for a while now. For example:
+### Additional Note on Lab Testing
 
-```rb
-what_time_is_it = "Lab time"
-```
+In this lab, we asked that you code your two classes in separate `dog.rb` and
+`person.rb` files. You could, in theory, code both classes in the same file, or
+even _code them in opposite files_ and still pass all tests. Why do you think
+that is?
 
-The code above sets a variable, `what_time_is_it`, equal to the string
-`"Lab time"`. Now we can use that variable to read and operate on that string.
+...
 
-```rb
-what_time_is_it #=> "Lab time"
+...
 
-what_time_is_it.upcase #=> "LAB TIME"
-```
+When the tests are run in this lab, RSpec loads both the `dog.rb` and
+`person.rb` files (this happens in the first two lines of `spec/spec_helper.rb`
+using [`require_relative`][]). As long as you place your classes in one of the
+files that RSpec loads, the tests will have access to them.
 
-The `what_time_is_it` variable is what's known as a **local variable**, so named
-because it can only be accessed in a specific, local environment.
+[`require_relative`]: https://apidock.com/ruby/Kernel/require_relative
 
-A local variable that is defined inside one method **cannot be accessed by
-another method**:
-
-```rb
-def method_a
-  my_local_variable = "I can only be used in method_a"
-  puts my_local_variable
-end
-
-def method_b
-  puts my_local_variable
-end
-
-method_b
-# NameError (undefined local variable or method `my_local_variable' for main:Object)
-```
-
-The **scope** of a local variable is that it is only available within the
-method.
-
-In order to get around this limitation, we can use **instance variables** inside
-our Ruby classes.
-
-An **instance variable** is a variable that is accessible in any instance method
-in a particular instance of a class.
-
-## Local Variables in Instance Methods
-
-Let's say we have a class called `Dog` that is responsible for producing
-individual dog objects. We want each dog instance to be able to have a name and
-to show its name. So we need to write two methods: one to _set_ the dog's name
-and one to _get_ the dog's name.
-
-Open `dog.rb` inside the `lib` folder and add the following two methods to the
-`Dog` class:
-
-```rb
-class Dog
-  def name=(dog_name)
-    this_dogs_name = dog_name
-  end
-
-  def name
-    this_dogs_name
-  end
-end
-```
-
-Here we've defined two **instance methods**, the `#name=` (or "name equals")
-method, and the `#name` method. The first method takes in an argument of a dog's
-name and assigns that value to a variable, `this_dogs_name`. The second method
-is responsible for reporting the name. Our two methods therefore are responsible
-for "setting" and "getting" an individual dog's name.
-
-We want the methods to act as mechanisms to expose data from inside of the
-object to the outside world; in other words, we want to be able to do this:
-
-```rb
-lassie = Dog.new
-lassie.name = "Lassie"
-
-lassie.name #=> "Lassie"
-```
-
-In the code above, we are creating a new `Dog` instance and assigning it a name
-then asking it to return its name.
-
-In your `dog.rb` file add the above code. Run `learn test` again. You should see
-output that includes something like this:
-
-```console
-$ learn test
-Failure/Error: this_dogs_name
-
-NameError:
-  undefined local variable or method `this_dogs_name' for #<Dog:0x00007fa7909a3078>
-```
-
-Uh-oh. Looks like the `#name` method doesn't know about the `this_dogs_name`
-variable from the `#name=` method. That is because `this_dogs_name` is a **local
-variable**. A local variable has a **local scope**, which means that it cannot be
-accessed outside of the method in which it is defined.
-
-To solve this problem, we'll need a new kind of variable: an **instance
-variable**.
-
-## Implementing Instance Variables
-
-We define an instance variable by prefacing the variable name with an `@`
-symbol.
-
-Instance variables are **bound to an instance** of a class. That means that when
-we set the value of an attribute on an instance of a class, the value we set is
-associated with that particular instance. This makes intuitive sense: a dog's
-name belongs to that specific dog, not to `Dog`s in general.
-
-Instance variables hold information about an instance, i.e., they describe
-_attributes_ or _properties_ of the instance, such as its name or breed. They
-can be called on throughout the class, without needing to be passed into other
-methods as arguments (as would be the case with local variables).
-
-Let's refactor our `Dog` class to use an **instance variable** instead of a
-local variable to set and get an individual dog's name.
-
-Inside `dog.rb`, change the `Dog` class in the following way:
-
-```rb
-class Dog
-
-  def name=(dogs_name)
-    @this_dogs_name = dogs_name
-  end
-
-  def name
-    @this_dogs_name
-  end
-end
-
-lassie = Dog.new
-lassie.name = "Lassie"
-
-puts lassie.name
-
-```
-
-Run `learn test` again; your tests should now be passing. By changing the local
-variable `this_dogs_name` to an instance variable `@this_dogs_name`, we've
-effectively changed its **scope**: instead of only being available to the method
-it's defined in, it's now available to **all instance methods** defined within
-the class.
-
-## Defining Getter and Setter Methods
-
-In Object-Oriented Ruby, we want to be able to **set attributes** on the
-instances of our classes. To do this, we create _setter_ methods, which take an
-argument and set the **instance variable** equal to that value:
-
-```rb
-class Dog
-  # setter method
-  def name=(value)
-    # assign the @name instance variable a value of whatever is passed as an argument
-    @name = value
-  end
-end
-
-odie = Dog.new
-
-# call the Dog#name= method with a value of "Odie"
-odie.name = "Odie"
-# this is equivalent to calling odie.name=("Odie")
-```
-
-We also want those objects to "know" the values of their attributes. So we also
-create a _getter_ method that will return the value of the instance variable:
-
-```rb
-class Dog
-  # setter method
-  def name=(value)
-    @name = value
-  end
-
-  # getter method
-  def name
-    # access the data from the @name instance variable and return it
-    @name
-  end
-end
-
-odie = Dog.new
-odie.name = "Odie"
-
-# call the Dog#name method
-puts odie.name
-# "Odie"
-```
-
-By using the `@` in front of the variable name, the variable that's created
-inside the _setter_ method is available inside the _getter_ method (and inside
-any other methods in our class).
-
-Note that this is quite different from the way we assign attributes to objects
-in JavaScript, which doesn't require instance variables or getter/setter
-methods:
-
-```js
-class Dog {}
-
-const odie = new Dog();
-odie.name = "Odie";
-console.log(odie.name);
-// "Odie"
-```
-
-Remember, unlike JavaScript, whenever we use **dot notation** in Ruby, we're
-calling a **method** on an **object**.
+While it isn't enforced, we do encourage you to separate classes into
+individual, accurately named files. In a larger application, you might not
+always need to load the `Dog` class when loading the `Person` class. As classes
+get larger, it also becomes easier to manage your code if you know each file
+contains _one_ class. Keeping to these conventions makes it easier in the future
+to go back and read code you've previously written.
 
 ## Conclusion
 
-As we dive deeper into object-oriented Ruby, we'll be using **instance
-variables** frequently to pass information around the **instance methods** of a
-class.
+With all tests passing, you have successfully written multiple instance methods
+and _two_ different classes!
 
-Think of instance variables as the containers for instance-specific information.
-If we define objects as the combination of **data** and **behavior**, then
-instance variables are where we store the data, and instance methods define the
-behavior.
-
-The ability of instance variables to store information and be accessible within
-different instance methods is one of the things that makes it possible for us to
-create similar but unique objects in object-oriented Ruby.
+The ability to define methods and behaviors in our classes for our instances
+makes Ruby classes behave not just as factories, capable of instantiating new
+individual instances, but also as a blueprint, defining what those instances can
+do.
